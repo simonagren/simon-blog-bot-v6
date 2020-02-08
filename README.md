@@ -1,6 +1,8 @@
-# simon-blog-botv1
+# simon-blog-bot-v2
 
 Develop a Bot step by step, introducing more concepts as we go
+
+This is the Bot that is used in the Dialog Blog post
 
 This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and echoes it back.
 
