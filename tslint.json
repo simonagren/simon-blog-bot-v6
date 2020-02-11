@@ -12,7 +12,8 @@
         "quotemark": [true, "single"],
         "one-variable-per-declaration": false,
         "curly": [true, "ignore-same-line"],
-        "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]
+        "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+        "no-trailing-whitespace": false
     },
     "rulesDirectory": []
 }

@@ -7,10 +7,11 @@ import * as restify from 'restify';
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-import { BotFrameworkAdapter } from 'botbuilder';
+import { BotFrameworkAdapter, ConversationState, MemoryStorage, UserState } from 'botbuilder';
 
 // This bot's main dialog.
 import { SimonBot } from './bots/bot';
+import { MainDialog } from './dialogs/MainDialog';
 
 const ENV_FILE = path.join(__dirname, '..', '.env');
 config({ path: ENV_FILE });
@@ -50,8 +51,17 @@ adapter.onTurnError = async (context, error) => {
     await context.sendActivity('To continue to run this bot, please fix the bot source code.');
 };
 
+let conversationState: ConversationState;
+let userState: UserState;
+
+const memoryStorage = new MemoryStorage();
+conversationState = new ConversationState(memoryStorage);
+userState = new UserState(memoryStorage);
+
+const dialog = new MainDialog('mainDialog');
+
 // Create the main dialog.
-const myBot = new SimonBot();
+const myBot = new SimonBot(conversationState, userState, dialog);
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {
