@@ -6,7 +6,7 @@ import {
   UserState
 } from 'botbuilder';
 import { Dialog, DialogState } from 'botbuilder-dialogs';
-import { MainDialog } from '../dialogs/MainDialog';
+import { MainDialog } from '../dialogs/mainDialog';
 
 export class SimonBot extends ActivityHandler {
   private conversationState: BotState;
@@ -26,13 +26,13 @@ export class SimonBot extends ActivityHandler {
   ) {
     super();
     if (!conversationState) {
-        throw new Error('[ProvisionBot]: Missing parameter. conversationState is required');
+        throw new Error('[SimonBot]: Missing parameter. conversationState is required');
     }
     if (!userState) {
-        throw new Error('[ProvisionBot]: Missing parameter. userState is required');
+        throw new Error('[SimonBot]: Missing parameter. userState is required');
     }
     if (!dialog) {
-        throw new Error('[ProvisionBot]: Missing parameter. dialog is required');
+        throw new Error('[SimonBot]: Missing parameter. dialog is required');
     }
     this.conversationState = conversationState as ConversationState;
     this.userState = userState as UserState;
@@ -61,7 +61,8 @@ export class SimonBot extends ActivityHandler {
       const membersAdded = context.activity.membersAdded;
       for (const member of membersAdded) {
         if (member.id !== context.activity.recipient.id) {
-          await context.sendActivity('Hello and welcome!');
+          const welcome = `Welcome to Simon Bot ${ member.name }. This Bot is a work in progress. At this time we have some dialogs working. Type anything to get started.`;
+          await context.sendActivity(welcome);
         }
       }
       // By calling next() you ensure that the next BotHandler is run.

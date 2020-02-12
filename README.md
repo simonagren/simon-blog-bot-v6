@@ -2,9 +2,9 @@
 
 Develop a Bot step by step, introducing more concepts as we go
 
-This is the Bot that is used in the Dialog Blog post
+This is the Bot that is used in the Dialog Blog post #3.
+[URL](https://simonagren.github.io/bot-framework-series-3)
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and echoes it back.
 
 ## Prerequisites
 

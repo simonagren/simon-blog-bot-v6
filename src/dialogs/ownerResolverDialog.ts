@@ -1,17 +1,17 @@
 import {
+  ComponentDialog,
   DialogTurnResult,
   PromptValidatorContext,
   TextPrompt,
   WaterfallDialog,
   WaterfallStepContext
 } from 'botbuilder-dialogs';
-import { CancelAndHelpDialog } from './cancelAndHelpDialog';
-import { SiteDetails } from './siteDetails';
 
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
-export class OwnerResolverDialog extends CancelAndHelpDialog {
+export class OwnerResolverDialog extends ComponentDialog {
+  
   private static async ownerPromptValidator(promptContext: PromptValidatorContext<string>): Promise<boolean> {
     if (promptContext.recognized.succeeded) {
       
@@ -52,12 +52,10 @@ export class OwnerResolverDialog extends CancelAndHelpDialog {
     const siteDetails = (stepContext.options as any).siteDetails;
 
     const promptMsg = 'Provide an owner email';
-    const repromptMsg = 'I\'m sorry, that email doesn\'t exists. Try again...';
 
     if (!siteDetails.owner) {
       return await stepContext.prompt(TEXT_PROMPT, {
         prompt: promptMsg
-        // retryPrompt: repromptMsg
       });
     } else {
       return await stepContext.next(siteDetails.owner);

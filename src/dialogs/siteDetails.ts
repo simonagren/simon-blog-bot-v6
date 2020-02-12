@@ -1,5 +1,3 @@
-import { Activity } from "botbuilder";
-
 export class SiteDetails {
     public siteType: string;
     public title: string;

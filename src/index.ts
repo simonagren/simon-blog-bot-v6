@@ -11,7 +11,7 @@ import { BotFrameworkAdapter, ConversationState, MemoryStorage, UserState } from
 
 // This bot's main dialog.
 import { SimonBot } from './bots/bot';
-import { MainDialog } from './dialogs/MainDialog';
+import { MainDialog } from './dialogs/mainDialog';
 
 const ENV_FILE = path.join(__dirname, '..', '.env');
 config({ path: ENV_FILE });
@@ -31,7 +31,6 @@ const adapter = new BotFrameworkAdapter({
     appPassword: process.env.MicrosoftAppPassword
 });
 
-// Catch-all for errors.
 adapter.onTurnError = async (context, error) => {
     // This check writes out errors to console log .vs. app insights.
     // NOTE: In production environment, you should consider logging this to Azure
@@ -47,8 +46,10 @@ adapter.onTurnError = async (context, error) => {
     );
 
     // Send a message to the user
-    await context.sendActivity('The bot encounted an error or bug.');
+    await context.sendActivity('The bot encountered an error or bug.');
     await context.sendActivity('To continue to run this bot, please fix the bot source code.');
+    // Clear out state
+    await conversationState.delete(context);
 };
 
 let conversationState: ConversationState;
@@ -59,8 +60,6 @@ conversationState = new ConversationState(memoryStorage);
 userState = new UserState(memoryStorage);
 
 const dialog = new MainDialog('mainDialog');
-
-// Create the main dialog.
 const myBot = new SimonBot(conversationState, userState, dialog);
 
 // Listen for incoming requests.
