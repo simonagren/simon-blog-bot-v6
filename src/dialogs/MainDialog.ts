@@ -5,6 +5,7 @@ import {
     DialogState,
     DialogTurnResult,
     DialogTurnStatus,
+    OAuthPrompt,
     WaterfallDialog,
     WaterfallStepContext
 } from 'botbuilder-dialogs';
@@ -14,6 +15,7 @@ import { SiteDialog } from './siteDialog';
 
 const SITE_DIALOG = 'siteDialog';
 const MAIN_WATERFALL_DIALOG = 'waterfallDialog';
+const OAUTH_PROMPT = 'OAuthPrompt';
 
 export class MainDialog extends ComponentDialog {
     
@@ -22,9 +24,16 @@ export class MainDialog extends ComponentDialog {
 
         this.addDialog(new SiteDialog(SITE_DIALOG))
             .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
+                this.promptStep.bind(this),
                 this.initialStep.bind(this),
                 this.finalStep.bind(this)
-            ]));
+            ]))
+            .addDialog(new OAuthPrompt(OAUTH_PROMPT, {
+                connectionName: process.env.connectionName,
+                text: 'Please Sign In',
+                timeout: 300000,
+                title: 'Sign In'
+            }));
 
         this.initialDialogId = MAIN_WATERFALL_DIALOG;
     }
@@ -46,11 +55,25 @@ export class MainDialog extends ComponentDialog {
     }
 
     /**
+     * Prompt step in the waterfall. 
+     */
+    private async promptStep(stepContext: WaterfallStepContext): Promise<DialogTurnResult> {
+        return await stepContext.beginDialog(OAUTH_PROMPT);
+    }
+
+    /**
      * Initial step in the waterfall. This will kick of the site dialog
      */
     private async initialStep(stepContext: WaterfallStepContext): Promise<DialogTurnResult> {
-        const siteDetails = new SiteDetails();
-        return await stepContext.beginDialog('siteDialog', siteDetails);
+        const tokenResponse = stepContext.result;
+        if (tokenResponse) {
+            await stepContext.context.sendActivity('You are now logged in.');
+            
+            const siteDetails = new SiteDetails();
+            return await stepContext.beginDialog('siteDialog', siteDetails);
+        }
+        await stepContext.context.sendActivity('Login was not successful please try again.');
+        return await stepContext.endDialog();  
     }
 
     /**

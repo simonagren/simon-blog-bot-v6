@@ -1,14 +1,16 @@
 import {
-  ActivityHandler,
   BotState,
   ConversationState,
+  SigninStateVerificationQuery,
   StatePropertyAccessor,
+  TeamsActivityHandler,
+  TurnContext,
   UserState
 } from 'botbuilder';
 import { Dialog, DialogState } from 'botbuilder-dialogs';
 import { MainDialog } from '../dialogs/mainDialog';
 
-export class SimonBot extends ActivityHandler {
+export class SimonBot extends TeamsActivityHandler {
   private conversationState: BotState;
   private userState: BotState;
   private dialog: Dialog;
@@ -68,5 +70,20 @@ export class SimonBot extends ActivityHandler {
       // By calling next() you ensure that the next BotHandler is run.
       await next();
     });
+
+    this.onTokenResponseEvent(async (context, next) => {
+      console.log('Running dialog with Token Response Event Activity.');
+
+      // Run the Dialog with the new Token Response Event Activity.
+      await (this.dialog as MainDialog).run(context, this.dialogState);
+
+      // By calling next() you ensure that the next BotHandler is run.
+      await next();
+  });
   }
+  
+  protected async handleTeamsSigninVerifyState(context: TurnContext, query: SigninStateVerificationQuery): Promise<void> {
+    await (this.dialog as MainDialog).run(context, this.dialogState);
+  }
+
 }
