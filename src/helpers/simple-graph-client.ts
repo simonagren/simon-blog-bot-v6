@@ -1,5 +1,5 @@
 import { Client } from '@microsoft/microsoft-graph-client';
-import { User } from '@microsoft/microsoft-graph-types';
+import { Group, User } from '@microsoft/microsoft-graph-types';
 
 export class SimpleGraphClient {
     
@@ -32,6 +32,21 @@ export class SimpleGraphClient {
         return await this.graphClient
             .api(`/users/${emailAddress}`)
             .get().then((res: User) => {
+                return res;
+            });
+    }
+
+    /**
+     * Check if an alias is in use
+     * @param {string} alias Alias for the group/site.
+     */
+    public async aliasExists(alias: string): Promise<Group> {
+        if (!alias || !alias.trim()) {
+            throw new Error('SimpleGraphClient.aliasExists(): Invalid `alias` parameter received.');
+        }
+        return await this.graphClient
+            .api('/groups/').filter(`mailNickname eq '${alias}' or displayName eq '${alias}'`)
+            .get().then((res: Group) => {
                 return res;
             });
     }

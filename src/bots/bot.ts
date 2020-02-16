@@ -81,6 +81,17 @@ export class SimonBot extends TeamsActivityHandler {
       await next();
   });
   }
+
+  /**
+   * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
+   */
+  public async run(context): Promise<void> {
+    await super.run(context);
+
+    // Save any state changes. The load happened during the execution of the Dialog.
+    await this.conversationState.saveChanges(context, false);
+    await this.userState.saveChanges(context, false);
+  }
   
   protected async handleTeamsSigninVerifyState(context: TurnContext, query: SigninStateVerificationQuery): Promise<void> {
     await (this.dialog as MainDialog).run(context, this.dialogState);
