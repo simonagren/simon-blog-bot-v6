@@ -1,4 +1,4 @@
-import { Group, User } from '@microsoft/microsoft-graph-types';
+import { Group } from '@microsoft/microsoft-graph-types';
 import { graph as graphClient } from '@pnp/graph-commonjs';
 import { BearerTokenFetchClient } from '@pnp/nodejs-commonjs';
 
@@ -31,8 +31,8 @@ export class SimplePnPJsClient {
             throw new Error('SimplePnPjsClient.aliasExists(): Invalid `alias` parameter received.');
         }
         try {
-            const group = await graphClient.groups.filter(`mailNickname eq '${alias}' or displayName eq '${alias}'`)();
-            return group ? true : false;
+            const group: Group[] = await graphClient.groups.filter(`mailNickname eq '${alias}' or displayName eq '${alias}'`)();
+            return group.length > 0;
         } catch (error) {
             return false;
         }
