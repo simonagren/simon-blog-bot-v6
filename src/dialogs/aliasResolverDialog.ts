@@ -1,5 +1,4 @@
 import {
-  ComponentDialog,
   DialogTurnResult,
   OAuthPrompt,
   PromptValidatorContext,
@@ -8,12 +7,13 @@ import {
   WaterfallStepContext
 } from 'botbuilder-dialogs';
 import { GraphHelper } from '../helpers/graphHelper';
+import { HelperDialog } from './helperDialog';
 
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 const OAUTH_PROMPT = 'OAuthPrompt';
 
-export class AliasResolverDialog extends ComponentDialog {
+export class AliasResolverDialog extends HelperDialog {
   private static tokenResponse: any;
   
   private static async aliasPromptValidator(promptContext: PromptValidatorContext<string>): Promise<boolean> {
@@ -21,7 +21,7 @@ export class AliasResolverDialog extends ComponentDialog {
       
       const alias: string = promptContext.recognized.value;
       
-      if (await GraphHelper.aliasExistsPnP(alias, AliasResolverDialog.tokenResponse))  {
+      if (await GraphHelper.aliasExists(alias, AliasResolverDialog.tokenResponse))  {
         promptContext.context.sendActivity('Alias already exist.');
         return false;
       }
@@ -34,7 +34,7 @@ export class AliasResolverDialog extends ComponentDialog {
   }
 
   constructor(id: string) {
-    super(id || 'ownerResolverDialog');
+    super(id || 'ownerResolverDialog', process.env.connectionName);
     
     this
         .addDialog(new TextPrompt(TEXT_PROMPT, AliasResolverDialog.aliasPromptValidator.bind(this)))

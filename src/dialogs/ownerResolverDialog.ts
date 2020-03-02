@@ -1,5 +1,4 @@
 import {
-  ComponentDialog,
   DialogTurnResult,
   OAuthPrompt,
   PromptValidatorContext,
@@ -8,12 +7,13 @@ import {
   WaterfallStepContext
 } from 'botbuilder-dialogs';
 import { GraphHelper } from '../helpers/graphHelper';
+import { HelperDialog } from './helperDialog';
 
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 const OAUTH_PROMPT = 'OAuthPrompt';
 
-export class OwnerResolverDialog extends ComponentDialog {
+export class OwnerResolverDialog extends HelperDialog {
   private static tokenResponse: any;
   
   private static async ownerPromptValidator(promptContext: PromptValidatorContext<string>): Promise<boolean> {
@@ -25,7 +25,7 @@ export class OwnerResolverDialog extends ComponentDialog {
         return false;
       }
       
-      if (!await GraphHelper.userExists(owner, OwnerResolverDialog.tokenResponse))  {
+      if (!await GraphHelper.userExists(OwnerResolverDialog.tokenResponse, owner))  {
         promptContext.context.sendActivity('User doesn\'t exist.');
         return false;
       }
@@ -43,7 +43,7 @@ export class OwnerResolverDialog extends ComponentDialog {
   }
 
   constructor(id: string) {
-    super(id || 'ownerResolverDialog');
+    super(id || 'ownerResolverDialog', process.env.connectionName);
     
     this
         .addDialog(new TextPrompt(TEXT_PROMPT, OwnerResolverDialog.ownerPromptValidator.bind(this)))

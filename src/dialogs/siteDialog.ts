@@ -1,7 +1,6 @@
 import {
     ChoiceFactory,
     ChoicePrompt,
-    ComponentDialog,
     ConfirmPrompt,
     DialogTurnResult,
     PromptValidatorContext,
@@ -10,6 +9,7 @@ import {
     WaterfallStepContext
 } from 'botbuilder-dialogs';
 
+import { HelperDialog } from './helperDialog';
 import { OwnerResolverDialog } from './ownerResolverDialog';
 import { SiteDetails } from './siteDetails';
 
@@ -20,9 +20,9 @@ const OWNER_RESOLVER_DIALOG = 'ownerResolverDialog';
 const CONFIRM_PROMPT = 'confirmPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
-export class SiteDialog extends ComponentDialog {
+export class SiteDialog extends HelperDialog {
     constructor(id: string) {
-        super(id || 'siteDialog');
+        super(id || 'siteDialog', process.env.connectionName);
         this
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new TextPrompt(TITLE_PROMPT, this.titlePromptValidator))

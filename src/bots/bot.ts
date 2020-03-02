@@ -1,6 +1,10 @@
 import {
+  Activity,
+  ActivityTypes,
   BotState,
+  ChannelAccount,
   ConversationState,
+  Mention,
   SigninStateVerificationQuery,
   StatePropertyAccessor,
   TeamsActivityHandler,
@@ -63,8 +67,14 @@ export class SimonBot extends TeamsActivityHandler {
       const membersAdded = context.activity.membersAdded;
       for (const member of membersAdded) {
         if (member.id !== context.activity.recipient.id) {
-          const welcome = `Welcome to Simon Bot ${ member.name }. This Bot is a work in progress. At this time we have some dialogs working. Type anything to get started.`;
-          await context.sendActivity(welcome);
+          // If we are in Microsoft Teams
+          if (context.activity.channelId === 'msteams') {
+            // Send a message with an @Mention
+            await this._messageWithMention(context, member);
+          } else {
+            // Otherwise we send a normal echo
+            await context.sendActivity(`Welcome to Simon Bot ${member.name}. This Bot is a work in progress. At this time we have some dialogs working. Type anything to get started.`);
+          }
         }
       }
       // By calling next() you ensure that the next BotHandler is run.
@@ -93,8 +103,26 @@ export class SimonBot extends TeamsActivityHandler {
     await this.userState.saveChanges(context, false);
   }
   
-  protected async handleTeamsSigninVerifyState(context: TurnContext, query: SigninStateVerificationQuery): Promise<void> {
+  public async handleTeamsSigninVerifyState(context: TurnContext, query: SigninStateVerificationQuery): Promise<void> {
     await (this.dialog as MainDialog).run(context, this.dialogState);
+  }
+
+  private async _messageWithMention(context: TurnContext, member: ChannelAccount): Promise<void> {
+    // Create mention object
+    const mention: Mention = {
+        mentioned: member,
+        text: `<at>${member.name}</at>`,
+        type: 'mention'
+    };
+
+    // Construct message to send
+    const message: Partial<Activity> = {
+        entities: [mention],
+        text: `Welcome to Simon Bot ${mention.text}. This Bot is a work in progress. At this time we have some dialogs working. Type anything to get started.`,
+        type: ActivityTypes.Message
+    };
+
+    await context.sendActivity(message);
   }
 
 }

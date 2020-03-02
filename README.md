@@ -1,9 +1,11 @@
-# simon-blog-bot-v3
+# simon-blog-bot-v6
 
 Develop a Bot step by step, introducing more concepts as we go
 
-This is the Bot that is used in the Dialog Blog post #4.
-[URL](https://simonagren.github.io/bot-framework-series-4)
+This is the Bot that is used in the Calling Microsoft Graph Blog post #6.
+
+
+[URL](https://simonagren.github.io/azurebot-nodejs-part6)
 
 
 ## Prerequisites

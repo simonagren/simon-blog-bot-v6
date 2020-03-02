@@ -23,24 +23,18 @@ export class SimplePnPJsClient {
     }
 
     /**
-     * Check if a user exists
-     * @param {string} emailAddress Email address of the email's recipient.
-     */
-    public async userExists(emailAddress: string): Promise<User> {
-        if (!emailAddress || !emailAddress.trim()) {
-            throw new Error('SimplePnPjsClient.userExists(): Invalid `emailAddress` parameter received.');
-        }
-        return await graphClient.users.getById(emailAddress).get();
-    }
-
-    /**
      * Check if an alias is in use
      * @param {string} alias Alias for the group/site.
      */
-    public async aliasExists(alias: string): Promise<Group> {
+    public async aliasExists(alias: string): Promise<boolean> {
         if (!alias || !alias.trim()) {
             throw new Error('SimplePnPjsClient.aliasExists(): Invalid `alias` parameter received.');
         }
-        return await graphClient.groups.filter(`mailNickname eq '${alias}' or displayName eq '${alias}'`).get();
+        try {
+            const group = await graphClient.groups.filter(`mailNickname eq '${alias}' or displayName eq '${alias}'`).get();
+            return group ? true : false;
+        } catch (error) {
+            return false;
+        }
     }
 }
