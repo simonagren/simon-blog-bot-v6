@@ -31,7 +31,7 @@ export class SimplePnPJsClient {
             throw new Error('SimplePnPjsClient.aliasExists(): Invalid `alias` parameter received.');
         }
         try {
-            const group = await graphClient.groups.filter(`mailNickname eq '${alias}' or displayName eq '${alias}'`).get();
+            const group = await graphClient.groups.filter(`mailNickname eq '${alias}' or displayName eq '${alias}'`)();
             return group ? true : false;
         } catch (error) {
             return false;

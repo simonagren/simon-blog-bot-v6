@@ -21,7 +21,7 @@ export class AliasResolverDialog extends HelperDialog {
       
       const alias: string = promptContext.recognized.value;
       
-      if (await GraphHelper.aliasExists(alias, AliasResolverDialog.tokenResponse))  {
+      if (await GraphHelper.aliasExists(AliasResolverDialog.tokenResponse, alias))  {
         promptContext.context.sendActivity('Alias already exist.');
         return false;
       }
@@ -34,7 +34,7 @@ export class AliasResolverDialog extends HelperDialog {
   }
 
   constructor(id: string) {
-    super(id || 'ownerResolverDialog', process.env.connectionName);
+    super(id || 'aliasResolverDialog', process.env.connectionName);
     
     this
         .addDialog(new TextPrompt(TEXT_PROMPT, AliasResolverDialog.aliasPromptValidator.bind(this)))
