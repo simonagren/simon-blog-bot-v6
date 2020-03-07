@@ -1,5 +1,5 @@
 import { Client } from '@microsoft/microsoft-graph-client';
-import { Group, User } from '@microsoft/microsoft-graph-types';
+import { User } from '@microsoft/microsoft-graph-types';
 
 export class SimpleGraphClient {
     
@@ -13,10 +13,9 @@ export class SimpleGraphClient {
 
         this.token = token;
 
-        // Get an Authenticated Microsoft Graph client using the token issued to the user.
         this.graphClient = Client.init({
             authProvider: (done) => {
-                done(null, this.token); // First parameter takes an error if you can't get an access token.
+                done(null, this.token); 
             }
         });
     }
@@ -30,12 +29,8 @@ export class SimpleGraphClient {
             throw new Error('SimpleGraphClient.userExists(): Invalid `emailAddress` parameter received.');
         }
         try {
-            const user: User = await this.graphClient
-            .api(`/users/${emailAddress}`)
-            .get();
-
+            const user: User = await this.graphClient.api(`/users/${emailAddress}`).get();
             return user ? true : false;
-
         } catch (error) {
             return false;
         }

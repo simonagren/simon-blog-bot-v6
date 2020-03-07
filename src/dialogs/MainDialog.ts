@@ -23,18 +23,17 @@ export class MainDialog extends ComponentDialog {
         super(id);
 
         this.addDialog(new SiteDialog(SITE_DIALOG))
-            .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
-                this.promptStep.bind(this),
-                this.initialStep.bind(this),
-                this.finalStep.bind(this)
-            ]))
             .addDialog(new OAuthPrompt(OAUTH_PROMPT, {
                 connectionName: process.env.connectionName,
                 text: 'Please Sign In',
                 timeout: 300000,
                 title: 'Sign In'
-            }));
-
+            }))
+            .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
+                this.promptStep.bind(this),
+                this.initialStep.bind(this),
+                this.finalStep.bind(this)
+            ]));
         this.initialDialogId = MAIN_WATERFALL_DIALOG;
     }
 
@@ -70,7 +69,7 @@ export class MainDialog extends ComponentDialog {
             await stepContext.context.sendActivity('You are now logged in.');
             
             const siteDetails = new SiteDetails();
-            return await stepContext.beginDialog('siteDialog', siteDetails);
+            return await stepContext.beginDialog(SITE_DIALOG, siteDetails);
         }
         await stepContext.context.sendActivity('Login was not successful please try again.');
         return await stepContext.endDialog();  

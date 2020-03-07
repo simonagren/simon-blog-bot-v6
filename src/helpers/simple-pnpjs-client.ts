@@ -8,7 +8,7 @@ export class SimplePnPJsClient {
 
     constructor(token: any) {
         if (!token || !token.trim()) {
-            throw new Error('SimpleGraphClient: Invalid token received.');
+            throw new Error('SimplePnPJsClient: Invalid token received.');
         }
 
         this.token = token;
