@@ -36,7 +36,8 @@ export class HelperDialog extends ComponentDialog {
                 case 'logout':
                     const adapter: any = dc.context.adapter;
                     await adapter.signOutUser(dc.context, this._connectionName);
-                    dc.context.sendActivity('You have been signed out');
+                    const logoutMessageText = 'You have been signed out';
+                    await dc.context.sendActivity(logoutMessageText, logoutMessageText, InputHints.IgnoringInput);
                     return await dc.cancelAllDialogs();
             }
         }
