@@ -22,7 +22,7 @@ export class AliasResolverDialog extends HelperDialog {
       const alias: string = promptContext.recognized.value;
       
       if (await GraphHelper.aliasExists(AliasResolverDialog.tokenResponse, alias))  {
-        promptContext.context.sendActivity('Alias already exist.');
+        await promptContext.context.sendActivity('Alias already exist.');
         return false;
       }
 
